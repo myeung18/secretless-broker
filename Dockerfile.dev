@@ -55,6 +55,12 @@ RUN go get -u github.com/jstemmer/go-junit-report && \
 COPY go.mod go.sum /secretless/
 COPY third_party/ /secretless/third_party
 
+# Get upstream dependencies latest changes.
+RUN go get github.com/cyberark/conjur-opentelemetry-tracer@latest && \
+    go get github.com/cyberark/conjur-authn-k8s-client@latest && \
+    go get github.com/cyberark/conjur-api-go@latest && \
+    go get github.com/cyberark/summon@latest
+
 RUN go mod download
 
 # TODO: all the stuff below this line is not needed
@@ -84,3 +90,6 @@ RUN go build -o dist/$GOOS/$GOARCH/secretless-broker ./cmd/secretless-broker && 
     ln -s $ROOT_DIR/dist/$GOOS/$GOARCH/summon2 /usr/local/bin/
 
 COPY . .
+
+# Update go.mod to include the upstream dependencies.
+RUN go mod tidy

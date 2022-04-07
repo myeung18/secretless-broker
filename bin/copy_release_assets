@@ -1,0 +1,82 @@
+#!/usr/bin/env bash
+
+set -eo pipefail
+
+print_help() {
+    echo "About $0: Copies release files into Github release asset directory."
+    echo "Usage: $0 path/to/asset/release/directory"
+    exit 1
+}
+
+if [[ "$#" -lt 1 ]]; then
+    print_help
+fi
+
+asset_dir="$1"
+
+if [[ ! -d "${asset_dir}" ]]; then
+    echo "${asset_dir} directory does not exist."
+    print_help
+fi
+
+function main() {
+    goreleaser_dir="pristine-checkout/dist/goreleaser"
+    repo_root="$(git rev-parse --show-toplevel)"
+
+    root_assets=(
+        "NOTICES.txt"
+        "CHANGELOG.md"
+        "LICENSE"
+    )
+
+    goreleaser_assets=(
+        "SHA256SUMS.txt"
+        *.tar.gz
+        *.rpm
+        *.deb
+        secretless-broker-linux_amd64_v1
+        secretless-broker-darwin_amd64_v1
+        secretless-broker-darwin_arm64
+    )
+
+    copy_assets "$repo_root" "${root_assets[@]}"
+    copy_assets "$goreleaser_dir" "${goreleaser_assets[@]}"
+
+    rename_assets
+}
+
+# Copy assets into Github release asset dir
+function copy_assets() {
+    local source_dir="$1"
+    shift
+    local assets=("$@")
+
+    for asset in "${assets[@]}"; do
+        # shellcheck disable=SC2086 # globbing is intentional for $asset
+        cp "${source_dir}"/${asset} "$asset_dir"
+    done
+}
+
+###################################
+# rename_assets() will find and remove _v1 from those files.
+#
+# During the Goreleaser build, _v1 is appended to some filenames.
+# To prevent clashing with the automated release process
+# the release section in goreleaser.yml has been disabled.
+# The extra-files secition globbing appears to have removed
+# the _v1 from the package filenames but no longer does so.
+#
+# GOAMD64 to build when GOARCH is amd64.
+# For more info refer to: https://golang.org/doc/install/source#environment
+# Default is v1.
+#
+###################################
+function rename_assets() {
+    # Find all assets ending with _v1
+    for file in "${asset_dir}"/*_v1; do
+        # Rename file, removing _v1 from asset
+        mv "$file" "${file/_v1/}"
+    done
+}
+
+main
