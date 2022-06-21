@@ -53,6 +53,7 @@ func ProviderFactory(options plugin_v1.ProviderOptions) (plugin_v1.Provider, err
 	if err != nil {
 		return nil, fmt.Errorf("ERROR: Conjur provider could not load configuration: %s", err)
 	}
+	os.Setenv("DEBUG", "true")
 
 	var apiKey, authnURL, tokenFile, username, version string
 	var conjurAuthenticator authenticator.Authenticator
@@ -83,6 +84,10 @@ func ProviderFactory(options plugin_v1.ProviderOptions) (plugin_v1.Provider, err
 		Version:             version,
 	}
 
+	log.Printf("Info: Conjur provider doing auhtentication to conjur to endpoint in local >>>>>>>>>>: %s", provider.AuthnURL)
+	log.Printf("Info: Config >>>: %s", config)
+	log.Printf("Info: Provider >>>: name: %s <---> %s", provider.Name, provider)
+
 	switch {
 	case provider.Username != "" && provider.APIKey != "":
 		// Conjur provider using API key
@@ -101,6 +106,7 @@ func ProviderFactory(options plugin_v1.ProviderOptions) (plugin_v1.Provider, err
 
 		// Load the authenticator with the config from the environment, and log in to Conjur
 		conjurAuthenticatorConf, err = authnConfig.NewConfigFromEnv()
+		log.Printf("authnConfig.NewConfigFromEnv()>>>>: %s", conjurAuthenticatorConf)
 		if err != nil {
 			return nil, err
 		}
@@ -112,15 +118,18 @@ func ProviderFactory(options plugin_v1.ProviderOptions) (plugin_v1.Provider, err
 		provider.Authenticator = conjurAuthenticator
 		provider.AuthenticatorConfig = conjurAuthenticatorConf
 
+		log.Printf("fetching access token>>>>>>")
 		refreshErr := provider.fetchAccessToken()
 		if refreshErr != nil {
 			return nil, refreshErr
 		}
 
 		go func() {
+			log.Printf("starting authenticating....loop")
 			// Sleep until token needs refresh
 			time.Sleep(provider.AuthenticatorConfig.GetTokenTimeout())
 
+			log.Printf("fetching access tokenLoop>>>>>>")
 			// Authenticate in a loop
 			err := provider.fetchAccessTokenLoop()
 
@@ -129,6 +138,8 @@ func ProviderFactory(options plugin_v1.ProviderOptions) (plugin_v1.Provider, err
 			if err != nil {
 				log.Fatal(err)
 			}
+
+			log.Printf("starting authenticating....end   ")
 		}()
 
 		// Once the token file has been loaded, create a new instance of the Conjur client
@@ -215,6 +226,7 @@ func (p *Provider) fetchAccessToken() error {
 			log.Printf("Info: Conjur provider received an error on authenticate: %s", err.Error())
 			return err
 		}
+		log.Printf("Info: Conjur provider is authenticating ...Done ")
 
 		return nil
 	}, expBackoff)
