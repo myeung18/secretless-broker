@@ -92,6 +92,8 @@ func (s *proxyServices) servicesToStart() (servicesToStart []internal.Service) {
 
 	// HTTP Plugins
 	for _, httpSvcConfig := range s.configsByType.HTTP {
+		s.logger.Infof("Going to start HTTP listener on %s...", httpSvcConfig)
+
 		// Validation will have already happened
 		httpSvc, err := s.createHTTPService(httpSvcConfig, httpPlugins)
 		if err != nil {

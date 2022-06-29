@@ -136,8 +136,14 @@ func (resolver *Resolver) Resolve(credentials []*config_v2.Credential) (map[stri
 
 	var err error
 
+	log.Println("Resolve Credential from provider...")
+
 	// Group credentials by provider
 	credentialsByProvider := groupCredentialsByProvider(credentials)
+
+	for x := range credentialsByProvider {
+		log.Println("Resolve Credential from provider...", x, credentialsByProvider[x][0])
+	}
 
 	// Resolve credentials by provider
 	for providerID, credentialsForProvider := range credentialsByProvider {

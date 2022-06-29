@@ -4,6 +4,9 @@ require (
 	github.com/aws/aws-sdk-go v1.15.79
 	github.com/cenkalti/backoff v2.2.1+incompatible
 	github.com/codegangsta/cli v1.20.0
+	github.com/cyberark/conjur-api-go v0.8.1
+	github.com/cyberark/conjur-authn-k8s-client v0.23.0
+	github.com/cyberark/summon v0.9.3
 	github.com/denisenkom/go-mssqldb v0.0.0-20191001013358-cfbb681360f0
 	github.com/docker/docker v20.10.14+incompatible
 	github.com/fsnotify/fsnotify v1.4.9
@@ -16,7 +19,7 @@ require (
 	github.com/pkg/errors v0.9.1
 	github.com/pkg/profile v1.2.1
 	github.com/smartystreets/goconvey v1.6.4
-	github.com/stretchr/testify v1.7.0
+	github.com/stretchr/testify v1.7.2
 	golang.org/x/crypto v0.0.0-20220427172511-eb4f295cb31f
 	gopkg.in/yaml.v2 v2.4.0
 	k8s.io/api v0.23.1
@@ -26,14 +29,11 @@ require (
 )
 
 require (
-	// Requires latest version for automated release process
-	github.com/cyberark/conjur-opentelemetry-tracer latest
-	// Requires latest version for automated release process
-	github.com/cyberark/conjur-api-go latest
-	// Requires latest version for automated release process
-	github.com/cyberark/conjur-authn-k8s-client latest
-	// Requires latest version for automated release process
-	github.com/cyberark/summon latest
+	github.com/cyberark/conjur-opentelemetry-tracer v0.0.0-20220113161145-73452511df0c // indirect
+	github.com/rogpeppe/go-internal v1.8.1 // indirect
+)
+
+require (
 	github.com/Microsoft/go-winio v0.5.1 // indirect
 	github.com/asaskevich/govalidator v0.0.0-20210307081110-f21760c49a8d // indirect
 	github.com/beorn7/perks v1.0.1 // indirect
@@ -93,9 +93,9 @@ require (
 	go.opentelemetry.io/otel/exporters/stdout/stdouttrace v1.3.0 // indirect
 	go.opentelemetry.io/otel/sdk v1.3.0 // indirect
 	go.opentelemetry.io/otel/trace v1.3.0 // indirect
-	golang.org/x/net v0.0.0-20211216030914-fe4d6282115f // indirect
+	golang.org/x/net v0.0.0-20220607020251-c690dde0001d // indirect
 	golang.org/x/oauth2 v0.0.0-20211104180415-d3ed0bb246c8 // indirect
-	golang.org/x/sys v0.0.0-20220111092808-5a964db01320 // indirect
+	golang.org/x/sys v0.0.0-20220520151302-bc2c85ada10a // indirect
 	golang.org/x/term v0.0.0-20210927222741-03fcf44c2211 // indirect
 	golang.org/x/text v0.3.7 // indirect
 	golang.org/x/time v0.0.0-20211116232009-f0f3c7e86c11 // indirect
@@ -106,7 +106,7 @@ require (
 	gopkg.in/DATA-DOG/go-sqlmock.v1 v1.3.0 // indirect
 	gopkg.in/inf.v0 v0.9.1 // indirect
 	gopkg.in/square/go-jose.v2 v2.5.1 // indirect
-	gopkg.in/yaml.v3 v3.0.0-20210107192922-496545a6307b // indirect
+	gopkg.in/yaml.v3 v3.0.1 // indirect
 	k8s.io/klog/v2 v2.40.1 // indirect
 	k8s.io/kube-openapi v0.0.0-20211115234752-e816edb12b65 // indirect
 	k8s.io/utils v0.0.0-20211208161948-7d6a63dca704 // indirect
